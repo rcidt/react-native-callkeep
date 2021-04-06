@@ -70,7 +70,7 @@ RNCallKeep.setup(options).then(accepted => {});
     - `ringtoneSound`: string (optional)
       If provided, it will be played when incoming calls received; the system will use the default ringtone if this is not provided
     - `includesCallsInRecents`: boolean (optional)
-      If provided, calls will be shown in the recent calls when true and not when false (ios 11 and above)
+      If provided, calls will be shown in the recent calls when true and not when false (ios 11 and above) (Default: true)
     - `maximumCallGroups`: string (optional)
       If provided, the maximum number of call groups supported by this application (Default: 3)
     - `maximumCallsPerCallGroup`: string (optional)
@@ -187,13 +187,33 @@ RNCallKeep.isCallActive(uuid);
 - `uuid`: string
   - The `uuid` used for `startCall` or `displayIncomingCall`
 
+
+### getCalls
+
+_This feature is available only on IOS._
+
+Returns a Promise. The result will be an array with all current calls and their states.
+
+```js
+RNCallKeep.getCalls();
+
+response:
+[{
+  callUUID: "E26B14F7-2CDF-48D0-9925-532199AE7C48"
+  hasConnected: true
+  hasEnded: false
+  onHold: false
+  outgoing: false
+}]
+```
+
 ### displayIncomingCall
 
 Display system UI for incoming calls
 
-````js
+```js
 RNCallKeep.displayIncomingCall(uuid, handle, localizedCallerName);
-````
+```
 
 - `uuid`: string
   - An `uuid` that should be stored and re-used for `stopCall`.
@@ -217,7 +237,6 @@ RNCallKeep.displayIncomingCall(uuid, handle, localizedCallerName);
   - `android`: object (currently no-op)
 
 ### answerIncomingCall
-_This feature is available only on Android._
 
 Use this to tell the sdk a user answered a call from the app UI.
 
@@ -378,6 +397,21 @@ _This feature is available only on iOS._
 ```js
 RNCallKeep.checkSpeaker();
 ```
+
+### toggleAudioRouteSpeaker
+
+Update the audio route of Audio Service on Android with a `routeSpeaker` boolean value (`true` if speaker need on, `false` otherwise).
+When Phone call is active, Android control the audio via connection service. so this function help to toggle the audio to Speaker or wired/ear-piece or vice-versa 
+
+_This feature is available only on Android._
+
+```js
+RNCallKeep.toggleAudioRouteSpeaker(uuid, true);
+```
+
+- `uuid`: string
+  - uuid of the current call.
+- `routeSpeaker`: boolean
 
 ### supportConnectionService (async)
 
@@ -798,7 +832,7 @@ In some case your application can be unreachable :
 - when the user kill the application
 - when it's in background since a long time (eg: after ~5mn the os will kill all connections).
 
-To be able to wake up your application to display the incoming call, you can use [https://github.com/ianlin/react-native-voip-push-notification](react-native-voip-push-notification) on iOS or BackgroundMessaging from [react-native-firebase](https://rnfirebase.io/messaging/usage#receiving-messages)-(Optional)(Android-only)-Listen-for-FCM-messages-in-the-background).
+To be able to wake up your application to display the incoming call, you can use [https://github.com/react-native-webrtc/react-native-voip-push-notification](react-native-voip-push-notification) on iOS or BackgroundMessaging from [react-native-firebase](https://rnfirebase.io/messaging/usage#receiving-messages)-(Optional)(Android-only)-Listen-for-FCM-messages-in-the-background).
 
 You have to send a push to your application, like with Firebase for Android and with a library supporting PushKit pushes for iOS.
 
